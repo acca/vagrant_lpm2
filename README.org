@@ -1,0 +1,19 @@
+* Howto
+  1) =vagrant up=
+  2) =vagrant ssh=
+  3) =cd /vagrant/code=
+  4) It is now possible to use:
+  	 - =poly= interpreter
+  	 - =polyc= compiler
+  	 - =mlton= compiler
+
+
+* Resources
+  - https://github.com/polyml/polyml
+  - http://www.polyml.org/download.html
+  - https://thebreakfastpost.com/2015/06/10/standard-ml-and-how-im-compiling-it/
+  - http://cs.fit.edu/~ryan/sml/intro.html
+  - http://disi.unitn.it/~abeni/LPM2/#esami
+  - http://disi.unitn.it/~abeni/LPM2/pf.pdf
+  - http://www.lfcs.inf.ed.ac.uk/software/polyml/docs/Intro1.html
+  - http://esamionline.disi.unitn.it

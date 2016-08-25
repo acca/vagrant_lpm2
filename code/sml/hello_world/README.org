@@ -1,0 +1,11 @@
+* Compiling instructions
+  - Using Polyml :: 
+		    #+BEGIN_EXAMPLE
+		    polyc hello_world.sml
+		    #+END_EXAMPLE
+  - Using mlton :: 
+		   #+BEGIN_EXAMPLE
+		   mlton hello_world.mlb
+		   #+END_EXAMPLE
+		    
+		   

@@ -1,0 +1,9 @@
+.vagrant
+
+# Ignore temporary files
+*~
+._*
+*.DS_Store
+
+# Ignore binary files
+a.out

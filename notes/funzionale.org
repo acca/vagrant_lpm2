@@ -1,0 +1,443 @@
+* Macchine astratte (capitolo 1)
+** Lezioni di riferimento
+   - 17/02/2015: Introduzione al corso; Macchine Astratte (Capitolo 1 del libro di testo)
+** Macchina astratta
+   Formalizzazione astratta di un generico esecutore di algoritmi, formalizzati in termini di uno specifico linguaggio di programmazione.
+** Definizioni
+  - RISC: Reduced instruction set computers
+  - CISC: Complex instruction set computers
+  - Ciclo fetch-decode-execute
+** Componenti interne macchina hardware
+    - ALU: Operazioni primitive aritmentico logiche
+    - PC: Controllo di seguenza, registro program counter che contiene prossima istruzione da eseguire
+    - MAR, MDR: Registri della CPU per controllare il trasferimento dati fra CPU e memoria (Memory Address/Data Register)
+    
+    - UC: Unità di controllo, dispositivi fisici che realizzano l'interprete. Con le operaizoni di controllo permette di eseguire il ciclo F-D-E
+** Interprete
+   Un componente essenziale della macchina astratta che ne caratterizza il comportamento, mettendo in relazione "operazionale" il linguaggio della macchina astratta con il mondo fisico circostante.
+** Linguaggio macchina
+   Linguaggio di una generica macchina astratta. M di L è una macchina astratta di L è un dispositivo che permette di eseguire programmi scritti in L. M corrisponde univocamente ad un linguaggio, il suo linguaggio macchina. Dato L, esistono infinite macchine astratte che hanno L come proprio linguaggio macchia. Esse differiscono nel modo in cui l'interprete è realizzato e nelle strutture dati utilizzate ma coincidono nel linguaggio interpretato, L.
+** Microprogrammazione
+   Tecnica utilizzata per permettere a calcolatori con hw diverso di condividere lo stesso set di istruzioni. Tali istruzioni di alto livello sono mappate su microistruzioni di più basso livello gestiti in genere da hw specifico. Si hanno 1 macchine astratte una sopra l'altra. Simulazione tramite microprogrammi: emulazione. Livello della microprogrammazione: firmware.
+** Realizzazione di una macchina astratta
+    - realizzazione in /hardware/ :: Sempre possibile in linea di principio, concettualmente abbastanza semplice da realizzare basta mettere assieme i dispositivi fisici tali per cui il suo linguaggio macchina è L. Esecuzione molto veloce ma costrutti lontani dai linguaggi di alto livello ed impossibile da modificare. Usata solo per linguaggi di basso livello o quando la velocità di esecuzione deve essere massima: sistemi real-time.
+    - simulazione mediante /software/ :: Strutture dati e algoritmi di M(L) sono realizzati sfruttando/simulando programmi scritti in un altro linguaggio M'(L'). Massima flessibilità di modifica di M(L), prestazioni peggiori perchè è presente un ulteriore livello di interpretazione e M'(L') deve sempre essere realizzata in hw, sw o fw.
+    - simulazione (emulazione) mediante /firmware/ :: Intermedia fra hw e sw. Vengono simulate/emulate le strutture dati e gli algoritmi di M(L) mediante microprogrammi. Microprogrammi usano uno specifico linguaggio di bassissimo livello e risiedono in una memoria di sola lettura dedicata che permette l'esecuzione direttamente dalla macchina fisica ad alta velocità. Velocità esecuzione intermedia fra i precedenti casi hw e sw, flessibilità inferiore alla soluzione sw. È possibile anche se complicato modificare i microprogrammi scritti nelle ROM.
+** Funzioni parziali
+   Una funzione parziale f : A -> B è una relazione tra A e B, tale che per ogni a in A, *se esiste* un corrispondente elemento b in B, questo è unico e lo denotiamo con f(a). Tale nozione è importante in quanto i programmi definiscono in modo naturale funzioni parziali.
+** Implementazione interpretativa pura
+   Dato L e Lo (Linguaggio della macchina ospite) si realizza un programma (I(Lo-L)) che è un interprete scritto in Lo che interpreta tutte le possibili istruzioni di L. Per eseguire un programma in L (P(L)), basterà eseguire I(Lo-L) con input P(L) e i dati di input. Il programma nel linguaggio L viene dato in pasto all'interprete come input assieme ai dati. In questo caso non c'è una traduzione ma una decodifica in quanto ad un'istruzione di L corrisponde un insieme di istruzioni in Lo. Il programma è eseguito nell'immediato/direttamente. Meno performante dato che richiede decodifica a runtime ma più flessibile perchè si può interagire direttamente con il programma scritto in L. La realizzazione di un interprete è più semplice di quella di un compilatore. Viene usata meno memoria perchè solo il codice sorgente e in memoria e non altri prg.
+** Implementazione compilativa pura
+   L'implementazione di L avviene traducendo esplicitamente i programmi scritti in L in programmi scritti in Lo. Tale traduzione è eseguita da un opportuno programma, il /compilatore/. L è linguaggio sorgente e Lo è linguaggio oggetto.\\
+    Per eseguire un programma P(L) con dato input D, dovremo eseguire prima il compilatore con P(L) come input che genererà un programma compilato in linguaggio Lo che successivamente eseguiremo con il dato di input D. Viene prodotto un programma che potremo eseguire successivamente. Se si tralasciano i tempi di compilazione, che avviene in un momento separato, l'esecuzione è più veloce perchè non c'è decodifica di mezzo. Decodifica viene fatta una sola volta a compile time. Flessibilità minore dato che si ha perdita di informazioni rispetto alle istruzioni originali nel programma compilato. Se c'è un errore nel compilatore non è banale capire a quale istruzione corrisponde nel sorgente. Più difficile creare strumenti di debugging.
+** Caso reale, macchina intermedia
+   Un programma in P(L) viene prima compilato in linguaggio Li (Linguaggio intermedio) creando P(Li) che viene poi eseguito, con i dati di input su una macchina ospite (MO) dopo essere stato interpretato da un Li scritto in Lo o dal supporto a run-time (SRT). JVM è una macchina intermedia.
+** Gerarchia di macchine astratte
+   Le macchine astratte sono quegli ambienti che permettono di eseguire istruzioni in un determinato linguaggio. Una generica M(Li) è implementata sfruttando le funzionalità della macchina sottostante M(Li-11) e contemporaneamente M(Li) che implementa Li fornisce le sue funzionalità alla macchina sovrastante M(Li+1). Tale strutturazione è utile per dominare il sistema molto complesso e per mantenere una certa indipendenza fra i vari livelli.\\
+    Quando viene scritto un programma, non si fa altro che definire un nuovo linguaggio Li e la relativa macchina astratta M(Li) che offrono funzionalità all'utente tramite l'interfaccia oppure ad un programma che definirà nuovo funzionalità e quindi un nuovo linguaggio.
+
+* Nomi ed ambiente, mutua ricorsione (capitolo 6)
+** Lezioni di riferimento
+   - 18/02/2015: Nomi ed Ambiente (Capitolo 6 del libro di testo)
+   - 24/02/2015: Fine del capitolo 6 del libro (mutua ricorsione; esempio);
+** Nomi e oggetti denotabili
+   In programmazione spesso definiamo dei nomi per identificare degli oggetti (funzioni, variabili, tipi). Tali nomi sono solo sequenze di caratteri che ci permettono di astrarre il concetto di oggetto complicato/strutturato e associarlo ad un nome. Ma sono solo nomi: /la variabile pippo/ in realtà è /la variabile di nome pippo/.\\
+   Gli oggetti a cui possiamo associare un nome sono detti *oggetti denotabili* (sia nome che associamo noi che nomi che associa direttamente il linguaggio)
+** Aliasing
+   Oggetto che può avere più nomi
+** Fasi associazione nome-oggetto
+   - Progettazione del linguaggio :: Associazioni fra nomi e costanti primitive (=+= per somma, =int= per intero)
+   - Scrittura del programma :: Associazione fra identificatore e variabile anche se in realtà tale associazione viene effettivamente realizzata solo quando lo spazio per la variabile viene allocato, quindi in esecuzione.
+   - Compilazione (compile-time) :: Il compilatore traducendo in codice macchina alloca spazio per variabili che possono essere gestite staticamente, come ad esempio le variabili globali per cui si crea il legame fra identificatore variabile e spazio in memoria già a compile time.
+   - Esecuzione (runtime) :: Tutte le associazioni non definite nelle fasi precedenti vengono definite qui. Esempio associazioni fra variabili e locazioni di memoria  per variabili locali di una procedura ricorsiva o puntatori a variabili per cui si alloca dinamicamente la memoria.
+
+   Altre fasi non citate sono: *linking* e *loading* in cui si associano nomi con oggetti esterni di altri moduli.
+
+   Nella pratica si definiscono due fasi principali:
+   - statica :: prima dell'esecuzione (allocazione statica della memoria)
+   - dinamica :: al momento dell'esecuzione (allocazione dinamica della memoria)
+** Ambiente
+   Insieme delle associazioni fra nomi ed oggetti denotabili esistenti a run-time in uno specifico punto del programa ed in uno specifico momento dell'esecuzione è detto ambiente (referencing environment).
+
+   È presente solo nella macchina astratta e non nella macchina fisica, dove viene opportunamente simulato nell'implementazione del linguaggio.
+   
+   - dichiarazione :: Costrutto che permette di introdurre un'associazione  nell'ambiente.
+   - aliasing :: Stesso oggetto visibile con nomi diversi nello stesso ambiente:
+     - Passaggio per riferimento ne è una possibile e frequente causa se il nome della variabile che viene passata per riferimoento è visibile anche dentro alla procedura
+     - Altro caso si verifica con i puntatori: X e Y sono variabili puntatore, se eseguo X = Y accedo alla stessa cella di memoria con nomi diversi.
+
+   In un certo ambiente sono presenti sia *associazioni attive* che *disattivate* (corrispondenti a dichiarazioni mascherate dalle *regole di visibilità*) 
+** Blocchi
+   Un blocco è una regione testuale del programma, identificata da un segnale di inizio ed uno di fine, che può contenere dichiarazioni locali a quella regione (cioè che compaiono in quella regione). Può essere considerato il costrutto di granularità più piccola a cui è possibile associare un ambiente costante (dato che all'interno del blocco esso non cambia).
+   - blocco associato ad una procedura :: corrisponde al corpo della procedura stessa
+   - bocco in-line (o anonimo) :: può comparire in qualsiasi posizione dove sia richiesto un comando
+
+   Una dichiarazione locale ad un blocco è visibile da quel blocco e da tutti i blocchi ad esso annidati a meno che non ci sia una nuova dichiarazione interna e più specifica che nasconde/maschera quella esterna (eccezioni gestite dalle regole di visibilità).
+** Operazioni sull'ambiente
+   Le associazioni presenti sull'ambiente oltre che essere create e distrutte possono anche essere disattivate, riattivate e, ovviamente, usate.
+** Tipi di ambiente
+   L'ambiente cambia durante l'esecuzione del programma, il cambiamento avviene *all'entrata ed all'uscita del blocco*.
+   - ambiente locale :: costituito dall'insieme di associazioni per nomi dichiarati localmente al blocco. Se è una procedura anche i parametri formali
+   - ambiente non locale :: costituito dalle associazioni relative a nomi che sono visibili nel blocco ma che *non* sono stati dichiarati localmente. (caso di blocchi annidati)
+   - ambiente globale :: costituito dalle associazioni create all'inizio dell'esecuzione del programma principale. Nomi usabili in tutti i blocchi del programma. Fa parte dell'ambiente non locale.
+
+** Regole di scope
+   Permettono di regolare la visibilità degli oggetti denotabili quando si verificano ambiguità ed eccezioni nel senso che non è facile comprendere aule ambiente sia quello di riferimento. Ogni linguaggio implementa un tipo di scope:
+*** Scope statico
+    In un linguaggio con scope *statico* (o lessicale), l'ambiente esistente in un qualsiasi punto del programma ed i un qualsiasi momento dell'esecuzione dipende unicamente dalla struttura sintattica del programma stesso. Tale ambiente può essere determinato completamente dal compilatore.
+
+    In questo modo il compilatore ha delle informazioni a tempo di compilazione che gli permettono di ottimizzare il codice e di segnalare eventuali errori anche se la gestione degli ambienti a run-time è più complicata dato che gli ambienti non locali evolvono in modo diverso dal normale flusso di attivazione e disattivazione dei blocchi, il quale dipende dalla struttura sintattica del programma (usato in C, C++, Java)
+*** Scope dinamico
+    Secondo la regola dello *scope dinamico*, l'associazione valida per un nome X in un qualsiasi punto P di un programma, è la più recente (in senso temporale) associazione creata per X che sia ancora attiva quando il flusso di esecuzione arriva a P.
+
+    Vengono determinate le associazioni fra nomi ed oggetti denotati seguendo a ritroso l'esecuzione del programma ed utilizzando strutture tipo LIFO. I nomi non locali vengono risolti utilizzando la stessa struttura a pila che viene usata per la gestione dei blocchi.
+
+    Lo scope dinamico permette di modificare il comportamento di procedure o di sottoprogrammi senza usare parametri espliciti ma solo ridefinendo delle variabili non locali usare dalla procedura. Questa flessibilità è più vantaggiosa ma rende più complicata la comprensione di un programma. Ha scarsa efficienza della gestione a runtime. (usato in LIST (alcune versioni, PERL, linguaggi moderni preferiscono scope dinamico)
+*** Differenze
+    La differenza tra scope statico e dinamico interviene solo per la determinazione dell'ambiente che è contemporaneamente /non locale e non globale/: per l'ambiente locale e quello globale le due regole coincidono.
+* Gestione della memoria, espressioni (capitolo 7)
+** Gestione statica
+   Allocata dal compilatore prima dell'esecuzione. Tali oggetti risiedono in una zona fissa, stabilita dal compilatore, per tutta la durata dell'esecuzione del programma.
+   In questo caso il linguaggio non può supportare ricorsione dato che per essa è necessario l'utilizzo della gestine dinamica della memoria.
+
+   Tipici elementi per i quali è possibile allocare staticamente la memoria sono:
+   - variabili globali :: visibili in tutto il programma
+   - istruzione del codice oggetto :: che normalmente non cambiano durante l'esecuzione
+   - costanti :: se non dipendono da altri valori non noti a compile-time
+   - tabelle prodotte dal compilatore :: necessarie per il supporto a run-time: gestione dei nomi, type checking, garbage collection
+   - procedure :: Solo nel caso in cui il linguaggio non supporti ricorsione. Si associa ad ogni procedura una zona di memoria per le informazioni locali della procedura stessa: variabili locali, informazioni della procedura contenenti argomenti o risultati, indirizzo di ritorno, valori temporanea, informazioni di debugging ed altro ancora. Chiamate successive alla stessa procedura condividono la stessa zona di memoria.
+** Gestione dinamica
+   La maggior parte dei linguaggi di programmazione permette una strutturazione a blocchi dei programmi che vengono aperti e chiusi usando una politica LIFO. È naturale gestire lo spazio di archiviazione dei dati di ogni blocco nella memoria tramite una *pila*. Tale pila è chiamata /pila a run-time/ o /pila di sistema/.
+
+   Lo spazio di memoria allocato sulla pila e dedicato ad un blocco in-line o all'attivazione di una procedura è detto *record di attivazione* (RdA) o anche *frame*. Nel caso della procedura, tale record è associato all'attivazione della stessa, conseguente ad una sua chiamata a run-time, non alla sua dichiarazione.
+
+   Al fine di migliorare l'utilizzo della memoria a run-time, le gestione dinamica è a volte usata anche in linguaggi che non supportano la ricorsione. Infatti se il numero medio di chiamate di procedura attive contemporaneamente (numero di RdA presenti in media nella pila) è minore del numero delle procedure dichiarate nel programma, usando una pila si risparmierà spazio di memoria in quanto non è necessario allocare una zona nella memoria per ciascuna procedura dichiarata.
+** Record di attivazione
+   - RdA per i blocchi in-line :: Per i blocchi in-line i settori del record di attivazione sono i seguenti:
+     - *risultati intermedi*: nel caso di calcoli complessi (due somme da dividere) i risultati intermedi sono memorizzati esplicitamente, in base al compilatore e all'architettura, nella pila o direttamente nei registri.
+     - *variabili locali*: dichiarate all'interno del blocco sono salvate in questo spazio di memoria la cui dimensione dipenderà dal numero e dal tipo delle variabili. Tali informazioni sono note al compilatore che calcolerà la corretta dimensione tranne in alcuni casi per cui le dimensioni dipendono da valori noti solo in esecuzione (es. array dinamici) e per cui il compilatore riserva una parte di dimensione variabile.
+     - *puntatore di catena dinamica*: campo che serve per memorizzare il puntatore al precedente record di attivazione sulla pila (ultimo RdA creato in precedenza temporale). Serve perchè i RdA in generale hanno dimensioni diverse. L'insieme di questi link è detto /catena dinamica/.
+   - RdA per le procedure :: Questo caso è analogo a quello dei blocchi in-line con qualche differenza data dalle maggiori informazioni da memorizzare per gestire il controllo e dal tipo di chiamata: /procedura/ o /funzione/ (ritorna un valore).
+     - *risultati intermedi, variabili locali, puntatore di catena dinamica*: identico a quanto accade nel RdA del blocco in-line
+     - *puntatore di catena statica*: serve per gestire le informazioni necessaria a realizzare le regole di scope statico
+     - *indirizzo di ritorno*: indirizzo della prima istruzione da eseguire dopo che la procedura/funzione attuale ha terminato l'esecuzione.
+     - *indirizzo del risultato*: presente solo nel caso delle funzioni. Contiene l'indirizzo della locazione di memoria nella quale il sottoprogramma deposita il valore restituito dalla funziona al suo termine. È una locazione di memoria all'interno del RdA del chiamante.
+     - *parametri*: in questo spazio sono memorizzati i valori dei parametri attuali usati nella chiamata della procedura o funzione.
+
+   Normalmente i nomi delle variabili non sono inseriti nel RdA ed i riferimenti alle variabili locali sono sostituiti dal compilatore con un indirizzo relativo rispetto ad una posizione fissa del RdA. Inoltre in genere i compilatori tendono ad ottimizzare il codice prodotto ed alcune informazioni vengono salavate direttamente nei registri.
+
+** Gestione della pila
+   - frame pointer :: puntatore all'ultimo RdA inserito nella pila, ossia quello che rappresenta il l'ambiente corrente.
+   - stack pointer :: in alcune implementazioni omesso, è il puntatore alla prima posizione di memoria libera nella pila.
+
+   I record di attivazione vengono inseriti e rimossi dalla pila a run-time quando si entra/esce da un blocco o da una procedura. La gestione a run-time è realizzata da alcuni frammenti di codice che il compilatore (o l'interprete) inserisce immediatamente prima o dopo la chiamata di una procedura o l'attivazione di un blocco, essi sono: la /sequenza di chiamata/ (chiamante), il /prologo/ e /l'epilogo/ (chiamato).
+   
+   Nel caso di una chiama a procedura questo codice si occupa di:
+   - modificare il valore del contatore programma: passaggio del controllo alla procedura chiamata salvando il vecchio valore per il ritorno.
+   - allocazione dello spazio sulla pila: predisposizione spazio e aggiornamento stack pointer.
+   - modifica del puntatore al RdA: deve puntare al nuovo RdA appena inserito che rappresenta l'ambiente corrente.
+   - passaggio dei parametri: in genere compito del chiamante dato che procedure possono avere parametri attuali diversi.
+   - salvataggio dei registri: ad esempio salvataggio vecchi puntatore a RdA che diventa puntatore di catena dinamica.
+   - esecuzione del codice per l'inizializzazione: se previsto dal linguaggio per inizializzare alcuni elementi del RdA appena inserito.
+		      
+   Nel caso del ritorno da una procedura, invece:
+   - ripristino valore contatore programma
+   - restituzione dei valori
+   - ripristino dei registri
+   - esecuzione del codice per la finalizzazione
+   - de-allocazione dello spazio sulla pila
+** Gestione dinamica mediante heap
+   Nel caso in cui il linguaggio includa comandi espliciti di allocazione della memoria, la gestione mediante la sola pila non è sufficiente. In questi casi viene utilizzata una particolare zona di memoria chiamata *heap* nella quale i blocchi di memoria possono essere allocati e de-allocati in modo relativamente libero. La sua gestione si differenzia a seconda che i blocchi di memoria siano:
+   - Blocchi a dimensione fissa :: Lo heap è suddiviso in un certo numero di elementi con dimensione fissa e abbastanza limitata, tale struttura, detta /lista libera/ prevede un puntatore alla lista (al primo elemento) ed ogni elemento punta al successivo. Quando si richiede un allocazione, il primo elemento della lista viene allocato, rimosso dalla lista, il suo indirizzo di memoria restituito ed il puntatore alla lista (primo elemento) viene aggiornato con il successivo. Quando si libera un elemento, esso viene ricollegato alla testa della lista aggiornando sia il puntatore alla lista che il puntatore all'elemento successivo.
+   - Blocchi a dimensione variabile ::
+   Usata nei casi in cui il linguaggio permette di allocare a run-time spazi di memoria di dimensione variabile, come ad esempio gli array che necessitando di una porzione sequenziale di memoria non può essere memorizzato utilizzando più blocchi a dimensione fissa.
+   
+   In questi casi si presentano due grossi problemi:
+     - la frammentazione interna: si verifica quando si alloca un blocco di dimensione strettamente maggiore di quella necessaria dal programma: la porzione di memoria non utilizzata è sprecata fino al rilascio del blocco.
+     - la frammentazione esterna: ben più grave e complicato da risolvere. Si verifica quando nello heap non esistono blocchi di dimensione sufficiente a contenere le nuove allocazioni richieste dal programma, anche se la somma degli stessi (quindi la memoria libera effettiva) è maggiore della dimensione richiesta.
+
+   Esistono delle tecniche di gestione e ri-compattazione della memoria, quali:
+   - unica lista libera: unica lista libera costituita da un unico blocco e contenente l'intero heap. Vengono allocati blocchi sequenzialmente su richiesta del programma, spostando il puntatore ogni volta alla fine dei blocchi in uso. I blocchi che vengono liberati sono collegati in una lista libera. Quando finisce la memoria dello heap si può utilizzare lo spazio libero in due modi: /utilizzo diretto lista libera/ e /compattazione della memoria libera/
+   - liste libere multiple: vengono usate più liste libere per blocchi di dimensione diversa. Quando viene richiesto un blocco di dimensione /n/ viene selezionata la lista che contiene blocchi di dimensione /uguale/ o /maggiore/ di /n/ e viene allocato il blocco in tale lista. Le dimensioni dei blocchi anche in questo caso possono essere statiche o dinamiche, nel caso siano dinamiche i seguenti metodi sono utilizzati per la loro gestione: /buddy system/ (usando potenze di 2ˆn per dimensione blocchi) e /heap di Fibonacci/ (usando successione di Fibonacci per dimensioni blocchi)
+** Implementazione delle regole di scope
+   Dato che il RdA contiene lo spazio di memoria per i nomi locali, quando si incontra un riferimento ad un nome non locale si dovranno analizzare i cari RdA ancora attivi (presenti sulla pila) per trovare quello corrispondente al blocco dove il nome in questione è stato dichiarato: tale blocco conterrà l'associazione per il nome ricercato. L'ordine con cui esaminare i RdA vria a seconda del tipo di scope considerato:
+   - Scope statico: catena statica ::
+	Per gestire a run-time la regola di scope statico, l'RdA del generico blocco /B/ è collegato dal /puntatore di catena statica/ al record del blocco immediatamente esterno a /B/ (più vicino blocco esterno che contiene B).
+	Nel caso in cui /B/ sia il blocco di una chiamata a procedura, il blocco immediatamente esterno a /B/ è quello che contiene la procedura stessa.
+	Se /B/ è attivo (suo RdA nella pila), allora anche i blocchi esterni a /B/ che lo contengono devono essere attivi (sulla pila).
+	La *catena statica* è dunque usata per rappresentare la struttura statica di annidamento dei blocchi nel programma.
+   - Scope statico il display ::
+	La realizzazione dello scope statico medtiante catena statica ha un inconveniente in quanto se dobbiamo risolvere un nome non locale dichiarato in un blocco eterno di /k/ livelli, dobbiamo effettuare /k/ accessi in memoria per scorrere la catena statica.
+	La tecnica del display permette di trovarlo effettuando solo 2 accessi in quando essa permette, memorizzare all'interno di un vettore i puntatori ai RdA per ciascun blocco presente nel programma, di reperire il giusto puntatore all'indice /k/ dell'array. Questa tecnica chiaramente è più costosa nelle fasi di entrata/uscita dagli ambienti per l'aggiornamento del vettore.
+	È da considerare che nei programmi reali, raramente si superano i 3 livelli di annidamento di blocchi e procedure.
+   - Scope dinamico: Lista di associazioni e CRT :: 
+	Tale implementazione, concettualmente è molto più semplice: visto che gli ambienti non locali si considerano nell'ordine con cui sono attivati a run-time, per risolvere un riferimento non locale al nome /x/, basterà percorrere a ritroso la pila, partendo dal RdA corrente, finoa  trovare il RdA corrispondente al blocco nel quale il nome /x/ è stato dichiarato.
+	Le associazioni fra nomi ed oggetti denotati possono essere memorizzate direttamente nel RdA oppure in una lista di associazioni detta /A-list/ che è gestita come una pila.
+	Questa tecnica ha due inconvenienti: i) i nomi devono essere memorizzati in strutture presenti a tempo di esecuzione e l'unico modo per trovarli è fare una ricerca a run-time e ii) questa ricerca è inefficiente in quanto può essere frequente  il caso in cui bisogna scandire l'intera lista per trovare il riferimento ad un nome dichiarato nei primi blocchi (nomi globali).
+	Per ovviare a questi problemi è possibile usare una /tabella centrale dell'ambiente/ CRT in cui vengono memorizzati tutti i nomi usati nel programma e per ogni nome è presente un flag (attivo/non attivo) ed un valore che costituisce il puntatore all'oggetto associato al nome.
+	È possibile accedere alla tabella in tempo costante se si assume che i nomi siano noti a compile-time (somma ind. memoria inizio tabella + offset posizione nome ricercato) oppure tramite tecniche di hashing.
+	Chiaramente si avrà una maggiore inefficienza nelle operazioni di entrata e uscita dai blocchi a causa degli aggiornamenti della tabella.
+* Le espressioni (capitolo 8)
+  Sono il componente essenziale di ogni linguaggio, perchè se esistono linguaggi dichiarativi nei quali non sono presenti i comandi, le espressioni, numerico o simboliche, sono presenti in tutti i linguaggi.
+  - Espressione (definizione) :: /Un espressione è un'entità sintattica la cui valutazione produce un valore oppure non termina, nel qual caso l'espressione è indefinita./
+  
+  La caratteristica princiapale di un'espressione, che la differenzia da un comando, è che la sua valutazione produce un valore. Esse possono essere numeriche o non numeriche, ad esempio: =4+3*2= oppure =(cons a b)= che in Lisp restituisce la coppia (puntata) formata da =a= e =b=.
+** Sintassi (come si rappresentano)
+   In generale un espressione è composta da un entità singola (costante, variabile, ecc), oppure da un operatore (=+=, =cons=, ecc) applicato ad un certo numero di argomenti che sono a loro volta espressioni.
+   Possiamo distinguere tre tipi principali di notazioni delle espressioni che si differenziano a seconda di come si rappresenta l'applicazione di un operatore ai suoi operandi.
+   - Notazione infissa ::
+	Il simbolo di un operatore binario è posto fra le espressioni che rappresentano i due operandi (=x+y= o =(x+y)*z=). Da notare che per evitare ambiguità nell'applicazione degli operandi sono necessarie le parentesi ed oportune regole di precedenza.\\
+	Per operatori non binari si ricorre ad una loro rappresentazione in termini di più simboli binari anche se la notazione infissa (comunemente usata in matematica ed adottata da molti linguaggi) non è la più naturale da usare.
+   - Notazione prefissa (polacca) ::
+	Il simbolo che rappresenta l'operatore precede i simboli che rappresentano gli operandi (da sx a dx). In questo tipo di notazione non servono ne parentesi, ne regole di precedenza fra gli operandi (purchè sia noto il numero degli stessi). Infatti viene sempre applicato l'operatore che precede gli operandi eliminando l'ambiguità.\\
+        Esempi: =+(a b)=, =f(a b)= oppure =f a b=, =*(+(a b)+(c d))=.
+   - Notazione postfissa (polacca inversa) ::
+	Analoga alla precedente con la differenza che il simbolo dell'operatore segue quello degli operandi.
+   
+   Rispetto a quella infissa, la notazione polacca permette di rappresentare in modo uniforme operatori con un numero qualsiasi di operandi e permette di valutare un'espressione in modo molto semplice.
+** Semantica (come si valutano)
+   Per ciascuna notazione abbiamo:
+   - Notazione infissa ::
+	Si paga la naturalezza e facilità d'uso con una maggiore complicazione nei meccanismi di valutazione delle espressioni. Si presentano infatti due problemi:
+     - *precedenza* : Se scriviamo =4+3*5= intendiamo 19 come risultato e non 35. I linguaggi di programmazione, per evitare un uso eccessivo di parentesi, utilizzano delle regole di precedenza e rispettano quasi tutti le convenzioni della notazione matematica. In ogni caso l'utilizzo delle parentesi è importante e da utilizzare per garantire una più facile ed intuitiva lettura del codice. Nel caso di operatori meno famigliari (AND, OR) questo tipo di valutazioni sono più complicate.
+     - *associatività* : Se scriviamo =15-5-3= potremo intendere =15-(5-3)= oppure =(15-5)-3=. La convenzione matematica ci assicura che l'operatore =-= associa da sx verso dx ma non ci sono eccezzioni come ad esempio l'elevamento a potenza che associa da dx verso sx.
+
+     La presenza di regole implicite di precedenza, associatività e di parentesi complicano le cose in quanto non e possibile valutare un espressione tramite un'unica scansione da sx a dx dato che in alcuni caso è necessario valutare la parte successiva di un espressione per poi ritornare sulla parte iniziale. Esempio: =5+3*2=.
+
+   - Notazione prefissa :: Le espressioni scritte in questa notazione si prestano ad essere valutate in modo semplice scandendo l'espressione da sinistra verso destra ed usando un pila. Sarà necessario:
+     1) Conoscere a priori il numero di operandi per ogni operatore ed distinguere sintatticamente l'operatore (unario rispetto a binario ecc).
+     2) Controllare che sulla pila ci siano abbastanza operandi per l'operazione.
+   - Notazione postfissa :: Ancora piè semplice in quando è comunque necessario conoscere preventivamente il numero degli operandi per ciascuna operazione ma non è necessario controllare che il numero di operandi sulla pila sia corretto in quanto essi vengono letti (e memorizzati sulla pila) prima dell'operatore.
+** Valutazione delle espressioni
+   Le espressioni (così come altri costrutti di un linguaggio) possono essere convenientemente rappresentate da alberi. in particolare esso è detto /albero sintattico/ dell'espressione. In esso:
+   1) ogni nodo che non è una foglia è etichettato con un operatore
+   2) ogni sotto-albero che ha come radice un figlio di un nodo N costituisce un operando per l'operatore associato a N.
+   3) ogni nodo che è una foglia è etichettato con una costante, una variabile o un altro operatore elementare.
+   
+   La rappresentazione ad albero chiarisce (senza bisogno di parentesi) precedenza e associatività degli operandi, inoltre, da un'espressione rappresentata in un albero, è possibile ricavare le rappresentazioni lineari visitando lo stesso in ordine diverso:
+   - infissa : simmetrico
+   - prefissa : anticipato
+   - postfissa : differito
+** Ordine di valutazione delle sotto-espressioni
+   L'ordine di valutazione delle sotto-espressioni è importante per i 5 seguenti motivi:
+   - *Effetti collaterali*:
+     È un azione che influenza i risultati (parziali o finali) di una computazione senza restituire esplicitamente un valore al contesto nel quale essa è presente. La possibilità di effetti collaterali fa si che l'ordine di valutazione degli operandi sia rilevante ai fini del risultato. In =(a+f(b)) * (c+f(b))=, se la funzione /f/ modifica il valore di /b/, l'ordine diventa rilevante. Alcuni linguaggi non permetto effetti collaterali (dichiarativi puri), altri vietano l'uso di funzioni nelle espressioni, altri fissano un ordine di valutazione delle espressioni (Java: sx->dx, C: non fissa ordine).
+   - *Aritmetica finita*:
+     Numeri rappresentabili in un calcolatore è finito dunque il riordinamento di espressioni può causare problemi di /overflow/. Inoltre la precisione limitata del calcolatore fa si che cambiando l'ordine degli operandi si possano ottenere risultati diversi (particolarmente rilevante in computazione in  virgola mobile).
+   - *Operandi non definiti*:
+     Nel valutare l'espressione ci sono due strategie:
+      - /eager/ (avido): valutare tutti gli operandi e poi applicare l'operatore ai valori ottenuti. Va bene per aritmetica ma non per espressioni condizionali. Ad esempio in ~a == 0 ? b : b/a~, /b/a/ sarebbe valutata in ogni caso generando un errore (division by 0). Più semplice da implementare, molti linguaggi la adottano con eccezioni per le espressioni condizionali.
+      - /lazy/ (pigro): non valutare gli operandi prima dell'operatore, passarli non valutati ad esso che, al momento della sua valutazione, deciderà quali operandi effettivamente sono necessari e quali no. Più costosa da implementare.
+   - *Valutazione con corto-circuito*:
+     Il problema degli /operandi non definiti/ si presenta in particolare per espressioni booleane, ad esempio in ~a == 0 || b/a > 2~, molti linguaggi (come il C) usano tecnica / leazy/  ma con la seguente eccezzione:
+      - se primo operatore di una /disgiunzione/ ha valore /vero/, non si valuta il secondo e si ritorna /vero/.
+      - se primo operatore di una /congiunzione/ ha valore /falso/, non si valuta il secondo e si ritorna /falso/.
+     Questa tecnica ottimizza il codice, ma non tutti i linguaggi la adottando, dunque è bene essere consapevoli delle regole dello stesso. Alcuni linguaggi (C e Ada) forniscono operatori booleani distinti per la valutazione a corto-circuito.
+   - *Ottimizzazione*:
+     Spesso l'ordine di valutazione delle sotto-espressioni influenza l'efficienza della valutazione di un espressione a causa di considerazione che hanno a che fare con la macchina hardware. Ad esempio in
+     #+BEGIN_EXAMPLE
+     a = vettore[i];
+     b = a*a + c*d;
+     #+END_EXAMPLE
+     sarebbe meglio valutare prima c*d dato che =a=, essendo prelevato dalla memoria potrebbe non essere disponibile subito. In alcuni casi i compilatori possono cambiare l'ordine degli operandi.
+     
+     Si lascia spesso al compilatore abbastanza libertà nella definizione precisa del metodo di valutazione delle espressioni usato, senza che questo venga specificato a livello di descrizione semantica del linguaggio (Java è un eccezione).
+     
+* I comandi (capitolo 8)
+** Nozione di comando
+  - Comando (Definizione) :: /Un comando è una entità sintattica la cui valutazione non necessariamente restituisce un valore, ma può avere un effetto collaterale./
+  
+  Fissato uno stato di partenza, il risultato della valutazione di un'espressione è un valore (insieme ai possibili effetti collaterali), mentre il risultato della valutazione di un comando è un nuovo stato, che differisce da quello di partenza proprio per le modifiche apportate dagli effetti collaterali del comando stesso (che sono causate maggiormente dagli assegnamenti).
+
+  Un comando è un costrutto il cui scopo è la modifica dello /stato/. Lo stato può essere definito come i valori di tutte le variabili presenti nel programma.
+
+** La variabile
+   È possibile identificare diverse definizioni di variabile nei linguaggi di programmazione:
+   - Nel *paradigma imperativo* classico viene usata la /variabile modificabile/. Essa è utilizzata come contenitore o locazione a cui si può associare un nome ed assegnare un valore successivamente modificabile tramite comandi di assegnazione. Si usa dire "la variabile x" ma sarebbe più corretto dire "la variabile di nome x" in quanto la variabile, ossia il contenitore è cosa diversa dal nome che le viene associato per denotarla.
+   - In alcuni *linguaggi imperativi (sopratutto orientati agli oggetti)* viene adottato un modello diverso dal precedente, in cui la variabile non è il contenitore ma il /riferimento/ ad un valore tipicamente memorizzato sullo heap. Nozione analoga a quella di puntatore senza le sue possibilità di manipolazione. Questo modello è detto /modello a riferimento/ delle variabili.
+   - Nei *linguaggi funzionali (puri)* viene usata una nozione simile a quella matematica in cui una variabile è un identificatore che denota un valore. Nelle versioni pure tali linguaggi non possiedono le variabili modificabili. Nel modello matematico la variabile è spesso un incognita a cui viene associato un valore tramite un legame che non può essere eliminato.Nei linguaggi di programmazione è presente il modo di modificare il valore senza modificare il legame.
+** L'assegnamento
+   È il comando di base principale nei linguaggi imperativi ed in quelli dichiarativi non puri, ossia quello che esprime il passo di computazione elementare. Analizzando dei casi particolari di assegnamento, si vede che sono presenti due possibili interpretazioni di una stessa variabile a seconda che esso sia presente a desta o a sinistra del simbolo.
+
+   Nell'esempio: =x = x+1=, la variabile =x= è usata per indicare due differenti entità:
+   - *l-value*: la variabile x di sinistra indica il contenitore. Insieme di valori di espressioni (che sostanzialmente indicano locazioni) che possono stare alla sinistra di un comando di assegnamento.
+   - *r-value*: la variabile x di destra indica il valore della variabile stessa. Insieme di valori di espressioni (valori che possono essere contenuti nelle locazioni) che possono stare alla destra di un comando di assegnamento.
+   In alcuni linguaggi, come il C, l'assegnamento oltre a produrre un effetto collaterale, restituisce anche lo r-value calcolato: =y = x = 3=.
+   In C come in altri linguaggi sono presenti altri comandi di assegnamento particolari che hanno lo scopo di migliorare la leggibilità del codice e in alcuni vasi evitare effetti collaterali non previsti, ad esempio: =a[f(3)] = a[f(3)]+1= può essere ambiguo (non incrementa il valore dell'array) se la funzione =f= ritorna valori doversi nelle chiamate di dx e sx (valutando prima dx). C risolve questo comportamento con ~a[f(3)] += 1~ che incrementa della quantità dell'operatore presente a destra, l'espressione di sinistra.
+
+   Nel modello a riferimento per le variabili l'assegnazione =x=e= fa si che =x= sia un riferimento per l'oggetto ottenuto della valutazione dell'espressione =e= e non viene copiato il valore di e nella locazione associata a =x=. Infatti, in questo caso, se associamo due variabili, =x=y=, esse sono due riferimento per lo stesso oggetto e modificare tale oggetto per mezzo di una variabile ma consultarlo per mezzo dell'altra e viceversa.
+** Comandi per il controllo di sequenza
+   Comprendono tutti gli altri comandi che non sono di assegnazione e possono essere divisi in 3 categorie:
+   - Comandi per il controllo di sequenza esplicito ::
+	Comando sequenziale, =goto= e il comando composto (considera più comandi in uno composto)
+     - *Comando sequenziale*: Indicato inn molti linguaggi con =;= permette di specificare in modo diretto l'esecuzione sequenziale di due o più comandi. Se il linguaggio permette ad un comando di restituire un valore esso sarà quello restituito dalla valutazione dell'ultimo comando. Es: =C1 ; C2 ; Cn=
+     - *Comando composto*: È possibile raggruppare una sequenza di comandi in un /comando composto/ usando opportuni delimitatori, in C: ={...}=. Tale comando o blocco può essere usato in qualsiasi contesto in cui ci si aspetta un comando semplice e quindi è possibile creare strutture annidate arbitrariamente complesse.
+     - *Goto*: Ispirato al salto di sequenza dei linguaggi assembly e quindi al modello di controllo di sequenza della macchina hardware, serve a trasferire il controllo ad un punto etichettato nel programma. Centro di un grande dibattito trentennale a partire dagli anni '70 è ora in disuso per la tendenza che ha il suo utilizzo nel rendere facilmente il codice poco comprensibile e mantenibile. È dimostrato che è possibile tradurre un programma eliminando il goto ma il suo codice sarebbe ancora più incomprensibile. Java è il primo linguaggio commerciale ad averlo bandito dall'insieme di comandi ammissibili.
+     - *Altri comandi per il controllo di sequenza*: Sostituiscono il goto altri comandi di salto specifici quali =break=, =case=, =continue=, =return= oppure tramite le /eccezioni/.
+
+   - Comandi condizionali (o di selezione) :: 
+	Permettono di specificare alternative su come proseguire la computazione, in dipendenza dal verificarsi di determinate condizioni logiche. Possiamo dividerli in due gruppi:
+     - *If*: Presente in quasi tutti i linguaggi imperativi ed anche in alcuni dichiarativi in varie forme sintattiche rincducibili alla forma: =if Bexp then C1 else C2=, dove =Bexp= è un espressione booleana mentre C1 e C2 sono comandi. Esso esprime un'alternativa nel proseguimento del programma sulla base della valutazione dell'espressione =Bexp=. Esistono alcune varianti sintattiche per il costrutto generale e per la gestione di ambiguità nella scrittura di condizioni annidate che ciascun linguaggio dichiara ed utilizza.
+
+       L'implementazione di questo comando non pone problemi in quanto sfrutta le istruzioni di test e salto della macchina fisica sottostante. La valutazione dell'espressione booleana può fare uso del corto-circuito (non valuta la parte successiva in caso di OR o AND entrami veri o falsi).
+
+     - *Case*: È una specializzazione del comando =if= con più rami. Viene valutata un espressione il cui valore di ritorno deve essere compatibile con quello delle label. A ciascuna label è associato un comando che viene eseguito se l etichetta include il valore ottenuto dall'espressione. Il ramo =else= finale viene eseguito se in nessuna ramo è soddisfatta la condizione.
+
+       Il case può essere chiaramente sostituito da una serie di if annidati ma molti linguaggi includono comunque nel set di comandi una forma di =case= per due motivi: migliorare la leggibilità del codice e rendere la compilazione più efficiente dato che la compilazione di un costrutto =case= e molto più semplice e veloce (2 salti per raggiungere il codice del ramo corretto) rispetto alla compilazione dello stesso codice scritto utilizzando if annidati (O(n) salti).
+
+       in C il controllo fluisce fra le etichette è quindi necessario un = break= alla fine del blocco di ogni etichetta per far passare il controllo alla fine del blocco =case=/=switch=. 
+       
+   - Comandi iterativi :: 
+	Permettono di ripetere un determinato comando per un numero di volte che può essere predefinito, oppure può dipendere dala verifica di una specifica condizione. Dato che un linguaggio touring completo deve poter rappresentare tutti i possibili algoritmi, sono necessari comandi per ripetere gruppi di istruzioni saltando indietro nel codice. Per raggiungere tale obbiettivo nei linguaggi di alto livello si utilizzano due meccanismi: l'/iterazione strutturata/ e la /ricorsione/. Per il primo se ne distinguono due varianti:
+     - *iterazione indeterminata*: realizzata da costrutti che permettono di iterare fino al verificarsi di una data condizione. Chiamata anche iterazione controllata logicamente. Il costrutto è costituito da due parti: una /condizione (o guardia)/ del ciclo ed un /corpo/ costituito da un comando (anche composto). La forma più comune è il =while=.
+
+       È di semplice implementazione perchè corrisponde ad un salto condizionato della macchina hardware. La presenza di questo costrutto in un linguaggio con soli comandi di assegnazione lo rende touring completo, questo non succede con l'iterazione determinata.
+     - *iterazione determinata*: realizzata mediante costrutti che permettono di iterare per un numero prefissato di volte. Chiamata anche iterazione controllata numericamente. Appare in molteplici forme non sempre pure. In una sintassi generale essa è definita così: =for I = inizio to fine by passo do corpo=. Dove =I= è una variabile, detta indice, contatore o variabile di controllo; =inizio= e =fine= sono espressioni; =passo= è una costante (a tempo di compilazione) intera e diversa da zero; =corpo= è il comando che si vuole iterare.
+       
+       Ha un importante vincolo di semantica statica che la variabile di controllo non può essere modificata nel corso dell'esecuzione del corpo. Non c'è alcun modo di ottenere un ciclo infinito. notevoli sono le differenze nella sintassi e nella semantica fra i vari linguaggi, alcuni permettono anche la modifica della variabile di controllo. Altre differenze sono: 
+       - il numero di iterazioni: corpo eseguito in ogni caso anche se condizione non vera fino dal primo giro
+       - il passo: costante positiva non nulla o sintassi particolare per passo negativo 
+       - il valore finale dell'indice: valore che assume =I= dopo la fine del ciclo, ultimo valore in alcuni casi genera ambiguità/errori perchè non fa parte dei valori ammessi.
+       - il salto nel ciclo: possibilità di salta mediante un comando all'interno di un ciclo. Vietata dalla maggior parte dei linguaggi.
+
+       L'espressività del comando =for= permette di ripetere un comando per /n/ volte dove /n/ è una quantità arbitraria, evidentemente questo non sarebbe possibile senza l'iterazione determinata dato che il programma ha lunghezza finita. Nonostante questo, l'iterazione determinata non è sufficiente a rendere Touring completo un linguaggio di programmazione dato che non permetterebbe di rappresentare una funzione che non termina mai o meglio che termina solo per determinati input. per rendere un linguaggio Touring completo è necessaria l'iterazione indeterminata.
+
+       Il comando =while= ha maggior espressività di un comando =for= infatti ogni comando =for= può essere traotto in un =while=. La ragione per cui in molti linguaggi sono presenti entrambi è che il comando =for= ha una forma molto compatta specificando sulla stessa linea le 3 componenti principali: inizializzazione, controllo ed incremento, che rende più semplice la comprensione e minimizza la possibilità di fare errori (dimenticare inizializzazione o incremento variabile di controllo). In alcuni linguaggi e su determinate architetture, inoltre, la compilazione di un =for= è più efficiente e meglio ottimizzabile soprattutto per quanto riguarda l'allocazione dei registri.
+
+       In C il =for= è molto libero dato che non congela il valore delle espressioni di controllo (possono essere qualsiasi cosa) e permette di modificare il valore dell'indice. Esso in C è in tutto e per tutto un abbreviazione del =while=.
+
+       Dato che un uso comune dei costrutti di iterazione è quello di scandire elementi di una struttura dati, da alcuni linguaggi è stato introdotto il /for-each/. Per implementare tale scansione con un =for= è necessario inserire molti dettagli (primo e ultimo indice della struttura, controllo che l'indice abbia raggiunto il limite) che il compilatore conosce già. Il /for-each/ permette di lasciare tali dettagli al compilatore scrivendo codice più compatto ed elegante.
+
+** Programmazione strutturata
+   Può essere considerato il primo passo per l'evoluzione alle moderne tecniche di programmazione e consiste in una serie di _prescrizioni_ volte a permettere uno sviluppo il più possibile strutturato del codice e quindi del flusso di controllo. Tali prescrizioni (linee guida) hanno una natura /metodologica/ perchè forniscono precisi metodi di sviluppo dei programmi ed anche una componente /linguistica/ in quanto indicano opportune tipologie di comandi da usare (quelli visti in precedenza tranne il =goto=).
+
+   In dettaglio essa prevedere:
+   - *Progettazione del programma top-down o comunque gerarchica*: Programma sviluppato per raffinamenti partendo da una specifica astratta ed aggiungendo dettagli.
+   - *Modularizzazione del codice*: È opportuno raggruppare i comandi che corrispondono ad ogni specifica funzione dell'algoritmo che si sta implementando, usando gli strumenti linguistici che il linguaggio mette a disposizione (comandi composti, costrutti per astrazione del controllo, procedure, funzioni e moduli).
+   - *Uso di nomi significativi*: L'utilizzo di questa pratica per variabili e funzioni semplifica molto la comprensione del codice e la possibilità di fare successive manutenzioni.
+   - *Uso estensivo di commenti*: Essenziali per comprensione, testing, verifica, correzione e modifica del codice. Programma senza alcune commento diventa ben presto ingestibile al crescere.
+   - *Uso di tipi di dato strutturati*: Possibilità di usare tipi di dato strutturato, come i record ad esempio, per raggruppare e strutturare informazioni, anche di tipo eterogeneo, al fine di facilitare la progettazione, la manutenzione e comprensione del codice.
+   - *Uso di costrutti strutturati per il controllo*: Aspetto essenziale dal punto di vista linguistico. Per questo tipo di programmazione è infatti essenziale  utilizzare costrutti di controllo strutturati, ossia costrutti che abbiamo un solo punto di ingresso ed un solo punto di uscita.\\
+     In questo modo è possibile strutturare il codice in modo che la scansione lineare del codice corrisponda al flusso di esecuzione: se il comando C2 segue testualmente C1, al termine di C1 il controllo è passato direttamente dall'uscita di C1 all'entrata di C2. Ogni comando al suo interno può avere strutture complesse come ramificazioni o cicli con una struttura del controllo non lineare che permette salti all'indietro.
+
+     Questa proprietà _fondamentale_ della programmazione strutturata è violata da comandi come il =goto= che permette salti avanti o indietro nel programma e che facilmente porta a scrivere del "codice spaghetti" perchè gli archi del grafo che rappresenta graficamente il flusso di controllo assomigliano ad un piatto di spaghetti anzichè ad un semplice grafo con pochi archi (che collegano l'uscito da un comando all'entrata del successivo)
+
+     I costrutti visti fino ad ora, ad eccezione del =goto= sono tutti costrutti strutturati e permettono di scrivere programmi per tutte le funzioni calcolabili e sono sufficienti per esprimere tutte le tipologie di flusso di controllo presenti nelle applicazioni reali.
+
+** La ricorsione
+   È un meccanismo alternativo all'iterazione per ottenere linguaggi di programmazione Touring equivalenti. Una funzione (o procedura) ricorsiva è una procedura nel cui corpo compare una chiamata a se stessa. È anche possibile avere ricorsione indiretta o meglio /mutua ricorsione/ quanto una procedura P chiama un'altra procedura Q la qui a sua volta chiama ancora P.
+
+   L'idea alla base delle definizioni ricorsive in matematica, chiamate anche definizioni induttive, è quella di descrivere il risultato dell'applicazione di una funzione /f/ ad un argomento /X/ in termini dell'applicazione della funzione /f/ stessa ad argomenti che siano "più piccoli di /X/". Se il dominio su cui è definita /f/ è tale da non ammettere catene infinite di elementi "sempre più piccoli", allora si può essere sicuri che dopo un numero finito di applicazioni della funzione /f/, si arriva ad un caso terminale. Infine, dal caso terminale è possibile ricostruire il valore di /f/ applicata a /X/ tornando indietro nelle iterazioni.
+
+   Definizioni induttive e funzioni ricorsive nei linguaggi di programmazione sono molto simili ma presentano una differenza fondamentale: _i) nel caso delle definizioni induttive non tutte le possibili definizioni di una funzione in termini di se stessa vanno bene, ii) mentre nel caso delle funzioni ricorsive dei linguaggi di programmazione si_
+
+   - i) Definizione matematica induttiva in cui non si sta definendo alcuna funziona matematica, in quanto nessuna funzione (che associa ad ogni elemento del dominio un elemento del codominio) totale sui numeri naturali soddisfa tale equazione.
+     #+BEGIN_EXAMPLE
+     foo(0) = 1
+     foo(n) = foo(n) + 1 per n > 0
+     #+END_EXAMPLE
+
+   - ii) Funzione ricorsiva nel linguaggio di programmazione, perfettamente lecita anche se non ritorna mai, dato che i linguaggi di programmazione definiscono funzioni parziali.
+   #+BEGIN_SRC c
+     int foo1 (int n) {
+       if (n == 0) return 1;
+       else
+         return foo1(n) + 1;
+     }
+   #+END_SRC
+*** La ricorsione in coda
+    In generale la presenza della ricorsione in un linguaggio di programmazione rende necessaria la gestione dinamica della memoria in quanto non è possibile determinare staticamente il numero massimo di istanze di una stessa funzione attive contemporaneamente e quindi il numero massimo dei record di attivazione necessari.
+
+    Analizzando la classica funzione ricorsiva per il calcolo del fattoriale:
+    #+BEGIN_SRC c
+      int fatt (int n) {
+        if (n <= 1)
+          return 1;
+        else
+          return n * fatt(n-1);
+    #+END_SRC
+
+    è semplice capire che per ogni chiamata ricorsiva è necessario avere in memoria un record di attivazione che contenga: /il puntatore alla catena dinamica, il puntatore all'indirizzo dove salvare il risultato, un'area di memoria per contenere la variabile n ed infine un'area di memoria per contenere il risultato intermedio ritornato dalla generica fatt(n-x)/. Ciascuna istanza una volta ritornato il valore della chiamata successiva dovrà moltiplicare fatt(n-x) per n e poi ritornarlo alla chiamata antecedente.\\
+    È chiaro in questo caso che è necessario avere tutti i record di attivazione in memoria.
+
+    Se si analizza la seguente funzione, che calcola anch'essa il fattoriale se chiamata con =fattrc(n,1)=:
+    #+BEGIN_SRC c
+      int fattrc (int n, int res) {
+        if (n <= 1)
+          return res;
+        else
+          return fattrc(n-1, n * res);
+      }
+    #+END_SRC
+
+    In questo secondo caso è evidente che ciascuna istanza non necessità di computare nessun calcolo intermedio prima di ritornare all'istanza chiamante in quanto, per /n > 1/, il valore restituito dalla generica chiamata =fattrc(n, res) è /esattamente lo stesso/ valore che viene restituito dalla successva chiamata ricorsiva =fattrc(n-1, n*res)=. Non c'è, in questo caso, la necessità di risalire la catena di chiamate utilizzando i valori intermedi.\\
+    Appare evidente che una volta che =fattrc(n,res)= ha chiamato ricorsivamente =fattrc(n-1,n*res)= non c'è alcuna necessità di mantenere il record di attivazione per la chiamata =fattrc(n,res)= perchè tutte le informazioni per calcolare il risultato finale sono state passate a =fattrc(n-1,n*res)=. È chiaro che ciascuna chiamata ricorsiva può semplicemente utilizzare il record di attivazione allocato dalla precedente e si può dire che =fattrc= _necessita di un solo Rda indipendentemente dal numero delle chiamate ricorsive che vengono fatte_\\
+    Queste considerazioni non valgono se si considerano funzioni di ordine superiore (ossia funzioni che accettano funzioni come parametri).
+
+    Questo tipo di ricorsione si chiama /ricorsione in cosa (tail recursion)/ in quanto la chiamata ricorsiva è l'ultima cosa che viene fatta nel corpo della procedura e dopo la chiamata ricorsiva non deve essere eseguita alcuna ulteriore computazione. In aggiunta essa permette un allocazione statica della memoria.
+
+    In generale è sempre possibile trasformare una funzione senza ricorsione in coda in una con la ricorsione in coda, complicando opportunamente la funzione stessa. L'idea è di fare in modo che tutta la computazione che deve essere dopo la chiamata ricorsiva, venga fatta prima per quanto possibile e la parte di lavoro che non può essere fatta prima della chiamata ricorsiva (perchè ad esempio necessita dei risultati di quest'ultima) viene "passata" con opportuni parametri aggiuntivi alla chiamata ricorsiva stessa.
+
+    Tale trasformazione può essere fatta automaticamente sfruttando una tecnica detta "continuation passing style" che in sostanza consiste nel rappresentare, in un dato punto di un programma, la parte rimanente del programma mediante una funzione detta continuazione. Questa tecnica non sempre permette di trasformare una funzione ricorsiva in una ricorsiva in coda che utilizza la memoria in modo statico in quanto in alcuni se la continuazione è una funzione, potrebbe contenere delle variabili che vanno valutate nell'ambiente del chiamante e quindi necessitano  dell'Rda di quest'ultimo.
+
+
+    - Ricorsione in coda (definizione) :: /Sia f una funzione che nel suo corpo contenga la chiamata ad una funzione g (diversa da f o anche uguale ad f stessa). La chiamata di g si dice "chiamata in cosa" (o tail call) se la funzione f restituisce il valore restituito da g senza dover fare alcuna ulteriore computazione. Diciamo che la funzione f ha la ricorsione in coda (è tail recursive) se tutte le chiamate ricorsive presenti in f sono chiamate in coda./
+
+*** Ricorsiione o iterazione
+    Sono entrambi due validi metodi alternativi per ottenere lo stesso potere espressivo e spesso l'uso dell'uno o dell'altro sono dovuti alla predisposizione del programmatore ed alla natura del problema. Spesso si considera la ricorsione meno efficiente ma le considerazioni viste in precedenza possono dimostrare il contrario ed in generale implementazioni di algoritmi con ricorsione in coda possono ottenere prestazioni analoghe a quelle dei corrispondenti algoritmi iterativi.    
+    
+* Definizioni
+  - parametri formali :: 
+       Variabili definite nella dichiarazione della funzione
+  - parametri effettivi/attuali ::
+       Variabili passate nella chiamata della funzione
+  - algoritmo iterativo ::
+       Costituito da una sequenza di azione che viene ripetuta, finché è necessaria la ripetizione stessa (ciclo).
+  - algoritmo ricorsivo ::
+       Algoritmo espresso in termini di se stesso. Semplifica i dati e poi viene riapplicato.
+  - programmazione imperativa ::
+       In cui un programma viene inteso come un insieme di istruzioni, ciascuna delle quali può essere pensata come un "ordine" che viene impartito. Viene definito in modo esplicito un algoritmo per conseguire uno scopo, viene quindi specifico il *come*.
+  - Programmazione dichiarativa/funzionale ::
+       Che utilizza un linguaggio di tipo puramente funzionale, logico o a vincoli. Viene specificato il *cosa* descrivendo le proprietà della soluzione desiderata lasciando indeterminato l'algoritmo da usare. In realtà questi linguaggi sono comunque in grado di descrivere gli algoritmi ed i dettagli implementativi. Codice HTML descrive cosa la pagina deve contenere ma non come si deve fare per visualizzarla sullo schermo (compito del browser).
+  - Le funzioni pure ::
+       Funzioni che non hanno nessuna forma di dipendenza dal resto del programma. Sono molto importanti per nella programmazione funzionale.
+       Una proprietà interessante delle funzioni pure è che il loro risultato *dipende solamente dai valori degli argomenti*, dunque si ottiene lo stesso risultato ogni volta che si chiama la funziona con gli stessi valori.
+       Affinché una funziona sia pure essa:
+    - Non deve accedere a nessuna variabile definita globalmente (sia in lettura che scrittura)
+    - Non deve richiamare funzioni che non sono pure
+    - Non deve effettuare operazioni di I/O
+    - Non deve modificare i parametri passati come argomenti nel caso siano puntatori.
+	 
+    Le funzioni matematiche sono tutte funzioni pure. Alcuni linguaggi lasciano gestire al programmatore la /purezza/ delle proprie funzioni mentre altri mettono a disposizione delle parole chiave per indicare questa caratteristica in modo da evitare gli errori più comuni.
+  - Funzione parziale ::
+       Ad ogni elemento del dominio corrisponde un solo elemento del codominio con la particolarità che tale corrispondenza non è definita per alcuni valori del domino. Se è definita per tutti i valori del domino allora la funzione si dice totale. 
+
+       Esiste al più un b appartenente a B tale che f(a) = b.
+
+       Ad esempio questa funzione è parziale: =f(n) = sqrt(n)= che va dall'insieme dei numeri naturali a se stesso in quanto f(n) è un numero naturale solo se n è un quadrato perfetto.
+  
+* Esercitazioni
+** SML intro e utilities
+   - Viene utilizzato l'interprete "Poly/ML" (http://www.polyml.org).
+   - Compilazione con PolyML: http://thebreakfastpost.com/2015/06/10/standard-ml-and-how-im-compiling-it/
+   - Basic examples: http://cs.fit.edu/~ryan/sml/intro.html
+   - Online tutorials:
+     - http://www.soc.napier.ac.uk/course-notes/sml/manual.html
+     - http://cs.lmu.edu/~ray/notes/introml/
+** TODO Fattoriale ricorsivo e stack frame
+** TODO Torri di Hanoi: versione semplice, versione funzionale e versione puramente funzionale in C++
+** TODO Qualche nota su ML
+** TODO Note sul currying
+** TODO Implementazione della funzione booleana xor usando pattern matching: enumerazione esaustiva di tutti i possibili valori degli argomenti (tabella di verita') o utilizzo di variable pattern.
+** TODO Funzione per convertire quantitativi di denaro.
+** TODO Esempio con datatype: tipo numero
+** TODO Tipi di dati ricorsivi: liste. Implementazione in standard ML usando fun e usando val ... fn. Alcune funzioni su liste implementate usando i costruttori, car e cdr. Inserimento ordinato.
+** TODO Definizione di numeri naturali (secondo Peano) in standard ML: funzioni di base e somma.
+** TODO Liste in C: implementazione "tradizionale" della funzione inserisci(); liste immutabili in C (equivalenti a quanto visto in ML), con header file e programma di test (compilare con "gcc -Wall list-test.c list.c"). Funzione inserisci() in C e versione piu' leggibile.
+** TODO Alcune note sui tipi di dato ricorsivi
+** TODO Liste in ML risolvendo il "problema" di car e cdr: prima soluzione (definendo listaoerrore "from scratch"), seconda soluzione (basando listaoerrore su lista - qui una soluzione alternativa), soluzione con alpha, seconda soluzione con alpha.
+** TODO Note su Liste standard di ML
+** TODO Cenni ad implementazione di alberi in Standard ML:
+** TODO Alberi binari, con funzione di inserimento in ordine
+** TODO Alberi "generici", con numero variabile di sottoalberi, possono essere implementati usando liste (liste standard ML o tipi di dato ricorsivi definiti da noi) o usando strutture dati mutuamente ricorsive.
+
