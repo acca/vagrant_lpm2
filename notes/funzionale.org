@@ -464,7 +464,44 @@
        Esempio disponibile [[file:~/UniTN/Corsi/Programmazione%20Funzionale/vagrant_sml/code/sml/esempio_scope_statico/][qui]] (Esempio 1 e 2)
        
      - Le keywords =fun= ed =fn= creano un blocco di annidamento statico (come {} in C) ed all'interno viene creato un nuovo binding fra simbolo che identifica il parametro formale e valore del parametro attuale. Tale binding può introdurre nuovo simbolo o mascherarne uno esistente (Esempio 2 scope statico sopra).
-     - 
+     - Meccanismo/Costrutto =let= per creare blocchi di annidamento statici contenenti espressioni
+       Permette di valutare l'espressione =<espressione>= dopo che l'ambiente è stato modificato aggiungendo in binding definiti in =<dichiarazioni>=. Utile per implementare fattoriale in coda.
+
+       #+BEGIN_EXAMPLE
+       let <dichirazioni> in <espressione> end;
+       #+END_EXAMPLE
+     - Meccanismo/Costrutto =local= per modificare l'ambiente all'interno di una dichiarazione
+       Permette di utilizzare i binding definiti da =<dichiarazione>= durante la definizione compresa fra =in= ed =end=, ripristinando poi l'ambiente originario. Utile per nascondere (non visibili nell'ambiente globale) funzioni accessorie utilizzate all'interno di altre. È usabile anche per nascondere =fact_tr= a due parametri nel caso precedente.
+
+       #+BEGIN_EXAMPLE
+       local <dichiarazioni> in <dichiarazione> end;
+       #+END_EXAMPLE
+     - =let= e =local= sono molto simili ed infatti è sempre possibile usare =let= al posto di =local=
+   - Funzioni che lavorano su Funzioni ::
+     - Il linguaggio fornisce il tipo di dato funzione e la possibilità di vedere le funzioni come oggetti denotabili, è quindi possibile avere funzioni che accettano e ritornano funzioni come parametri.
+     - Sfruttando questa capacità è possibile implementare =derivata1= e =derivata2=
+     - =derivata2= può essere vista come applicazione parziale di =derivata1=, infatti è possibile invocarla con un solo parametro =f=.
+     - L'idea del currying è che una funzione di due parametri /x/ e /y/ è una funzione del parametro /x/ che ritorna una funzione del parametro /y/.
+     - L'operatore =fun= fornisce una sintassi semplificata che supporta direttamente il meccanismo del currying
+     - Per definire una funzione parziale bisogna usare la sintassi estesa:
+       #+BEGIN_SRC sml
+         val fc fn x => (fn y => x * x + y * y);
+         val fc = fn: int -> int -> int
+         (*se passo int ritorna funzione da int a int, se passo funzione da int a int ritorna int*)
+       #+END_SRC
+       tramite la quale si può poi definire questa applicazione parziale: =val g = f 5;= che definisce una funzione /g(y) = 25 + y^2/.
+       
+       Usando la versione:
+
+       #+BEGIN_SRC sml
+         > val f = fn (x,y) => x*x + y*y;
+         val f = fn: int * int -> int
+         (*posso solo passare una coppia di interi come parametro e viene ritornato un intero*)                     
+       #+END_SRC
+       questo non è possibile e lo si può notare dai _valori di dominio e codominio su cui sono definite le due funzioni_.
+   - Ancora sui tipi di dato ::
+	
+       
 		  
 	
 	
