@@ -427,6 +427,50 @@
 ** TODO Fattoriale ricorsivo e stack frame
 ** TODO Torri di Hanoi: versione semplice, versione funzionale e versione puramente funzionale in C++
 ** TODO Qualche nota su ML
+   - Associare nomi a valori ::
+	Una /dichiarazione/ tramite la keyword val, in ML associa un nome ad un valore (che può anche essere il risultato di un'espressione). Quindi la variabile definita non è modificabile, infatti:
+	#+BEGIN_SRC sml
+          val v = 3;
+          # Se provo a modificare v
+          v = v + 1;
+          # Ottengo un risultato booleano (false), perchè sto valutando un espressione. Non sto alterando la variabile v.
+          # Per modificare v devo usare val, che maschera il valore precedentemente salvato nell'ambiente
+          val v = v + 1;
+          # A questo punto v vale 4
+	#+END_SRC
+   - Funzioni ::
+     - Sono un tipo di dato
+     - Sono intese come funzioni matematiche che definiscono una relazione fra dominio (parametro) ed un codominio (valore di ritorno)
+     - Non è limitante avere un solo parametro
+       - È possibile passare un parametro che è una /n/-upla di valori
+       - È possibile utilizzare il meccanismo del /currying/
+     - Non può avere effetti collaterali (che non siano nel valore di ritorno della funzione)
+   - Definzione per casi ::
+     - Viene utilizzato il /pattern matching/
+     - Espressioni di ritorno dei vari casi devono avere stesso tipo
+     - I vari pattern definiti devono coprire tutti i valori, per questo si usa =_= per fare il match di qualsiasi valore non definito. È obbligatorio a meno che un pattern non sia una variabile.
+   - Pattern matching ::
+	TODO
+   - Ricorsione ::
+     - Attenzione all'utilizzo di =val rec= o =fun= per la definizione di funzioni ricorsive
+   - Controllare l'ambiente ::
+     - ML utilizza scoping statico (come molti linguaggi moderni) per cui: /in una funzione i simboli _non locali_ vengono risolti considerando l'ambiente del blocco di codice in cui la funzione è definita e non l'ambiente in cui la funzione viene chiamata./ Ad esempio:
+       1) Definisco variabile x con valore 1 in un file esterno
+       2) Definisco funzione f che mostra tale variabile x nello stesso file esterno
+       3) Importo il file in un prompt SML usando =use=
+       4) Definisco variabile x (stesso nome dello step 1) con valore 2
+       5) Chiamo la funzione f e noto che ritorna 1
+
+       Esempio disponibile [[file:~/UniTN/Corsi/Programmazione%20Funzionale/vagrant_sml/code/sml/esempio_scope_statico/][qui]] (Esempio 1 e 2)
+       
+     - Le keywords =fun= ed =fn= creano un blocco di annidamento statico (come {} in C) ed all'interno viene creato un nuovo binding fra simbolo che identifica il parametro formale e valore del parametro attuale. Tale binding può introdurre nuovo simbolo o mascherarne uno esistente (Esempio 2 scope statico sopra).
+     - 
+		  
+	
+	
+   
+
+
 ** TODO Note sul currying
 ** TODO Implementazione della funzione booleana xor usando pattern matching: enumerazione esaustiva di tutti i possibili valori degli argomenti (tabella di verita') o utilizzo di variable pattern.
 ** TODO Funzione per convertire quantitativi di denaro.
@@ -440,4 +484,3 @@
 ** TODO Cenni ad implementazione di alberi in Standard ML:
 ** TODO Alberi binari, con funzione di inserimento in ordine
 ** TODO Alberi "generici", con numero variabile di sottoalberi, possono essere implementati usando liste (liste standard ML o tipi di dato ricorsivi definiti da noi) o usando strutture dati mutuamente ricorsive.
-
