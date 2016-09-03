@@ -7,3 +7,6 @@
 
 # Ignore binary files
 a.out
+
+# Ignore output files
+*funzionale.html
