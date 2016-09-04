@@ -18,3 +18,7 @@
   - http://disi.unitn.it/~abeni/LPM2/pf.pdf
   - http://www.lfcs.inf.ed.ac.uk/software/polyml/docs/Intro1.html
   - http://esamionline.disi.unitn.it
+* Disclaimer
+  This work has been created to collect tools, codes  and notes during the studying session of the course "Linguaggi di Programmazione - Modulo 2" at UniTN and may contain errors. It is strongly suggested to not use it as the only reference.
+
+  It _does not replace_ the main page of the course: http://disi.unitn.it/~abeni/LPM2/.
