@@ -67,7 +67,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     # Update
     sudo apt-get update
-    # Install rewuired deps
+    # Install required deps
     sudo apt-get install -y git
     sudo apt-get install -y build-essential
     # Install poly and polyc
@@ -80,5 +80,9 @@ Vagrant.configure(2) do |config|
     make clean-local clean distclean
     # Install mlton
     sudo apt-get install -y mlton
+    # Install rlwrap
+    sudo apt-get install -y rlwrap
+    # Force poly to use rlwrap
+    echo -n "alias poly='rlwrap poly'" >> /home/vagrant/.bash_aliases
   SHELL
 end
