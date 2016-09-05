@@ -461,7 +461,7 @@
        4) Definisco variabile x (stesso nome dello step 1) con valore 2
        5) Chiamo la funzione f e noto che ritorna 1
 
-       Esempio disponibile [[file:~/UniTN/Corsi/Programmazione%20Funzionale/vagrant_sml/code/sml/esempio_scope_statico/][qui]] (Esempio 1 e 2)
+       Esempio disponibile [[file:code/sml/esempio_scope_statico/scope_statico.sml][qui]] (Esempio 1 e 2)
        
      - Le keywords =fun= ed =fn= creano un blocco di annidamento statico (come {} in C) ed all'interno viene creato un nuovo binding fra simbolo che identifica il parametro formale e valore del parametro attuale. Tale binding può introdurre nuovo simbolo o mascherarne uno esistente (Esempio 2 scope statico sopra).
      - Meccanismo/Costrutto =let= per creare blocchi di annidamento statici contenenti espressioni
@@ -500,14 +500,75 @@
        #+END_SRC
        questo non è possibile e lo si può notare dai _valori di dominio e codominio su cui sono definite le due funzioni_.
    - Ancora sui tipi di dato ::
-	
+     - Tipi di dato semplici o complessi in SML possono essere aggregati per generare tipi più complessi.
+     - Il modo più semplice è formando delle tuple che /rappresentano il prodotto cartesiano/ dei tipi che le compongono.
+     - Il tipo =unit= può essere visto come una tupla di 0 elementi: =()=
+     - Tuple di 1 elemento corrispondono all'elemento stesso: =(5)=
+       #+BEGIN_SRC sml
+         > (6);
+         val it = 6: int
+         > (6) = 6;
+         val it = true: bool
+       #+END_SRC
+     - Il meccanismo di pattern matching applicato alle tuple permette di creare binding fra più nomi e simboli contemporaneamente. Tale meccanismo è usato per passare parametri multipli ad una funzione tramite una tupla. [[file:~/UniTN/Corsi/Programmazione%20Funzionale/vagrant_lpm2/code/sml/datatype/type_tuple.sml][Esempio]]
+     - È possibile /definire dei sinonimi/ per i tipi di dati esistenti tramite il costrutto *=type=* che aumenta l'espressività e rende il codice più comprensibile. Tale costrutto _non_ introduce nuovi tipi.
+       #+BEGIN_SRC sml
+         type coppiadiinteri = int * int;
+         type nomecognomre = string * string;
+         type coppiadireali = real * real;
+         
+         val sommaquadrati_real = fn (x,y):coppiadireali => x * x + y * y;
+         sommaquadrati_real (5.0,6.0);
+         val a:coppiadireali = (5.0,6.0);
+         sommaquadrati_real a;
+         (*Senza tipo avrei definito una funzione che prende una coppia di interi:*)
+         val sommaquadrati_int = fn (x,y) => x * x + y * y;
+         sommaquadrati_int (5.6);
+       #+END_SRC
+     - Attenzione al polimorfismo ed ai tipi generici:
+       #+BEGIN_SRC sml
+         (*Questa funzione prende una coppia e la trasforma in una tripla*)
+         val c2t = fn (x,y) => fn z => (x,y,z);
+         (*Il tipi dei parametri è generico: val c2t = fn: 'a * 'b -> 'c -> 'a * 'b * 'c*)
+         (*Volendo implementare la stessa funzione sugli interi:*)
+         val c2t = fn (x,y):int * int => fn z:int => (x,y,z);
+         (*oppure*)
+         val c2t = fn (x:int,y:int) => fn z:int => (x,y,z);
+         (*o ancora*)
+         type coppiadiinteri = int * int;
+         val c2t = fn (x,y):coppiadiinteri => fn z:int => (x,y,z);
+         (*Volendo implementare la stessa funzione su tipi diversi:*)
+         val c2t = fn (x,y):int * int => fn z:string => (x,y,z);
+       #+END_SRC
+     - Possibili problemi con =type= se si vuole definire un tipo che possa assumere un numero finito di valori
+     - Utilizzando =datatype= è possibile far riconoscere all'interprete valori non conosciuti per default. Semplice esempio:
+       #+BEGIN_SRC sml
+         datatype currency = eur | usd | ounce_gold;
+       #+END_SRC
+       Ora è possibile usare il valore =eur= che è di tipo =currency=: val a = eur;
+     - I possibili valori che si definiscono in =datatype= sono *costruttori di valore*, ossia funzioni che ritornano valori del tipo che si sta definendo.
+     - Tali costruttori possono non avere un argomento (costanti) oppure averlo. In tal caso il costruttore non è costante ma è una funzione che ritorna un valore a partire da un argomento
+       #+BEGIN_SRC sml
+         datatype money = Eur of real | Usd of real | Ounce_gold of real;
+       #+END_SRC
+       "Eur" non rappresenta un valore (costante) del tipo =money= ma è una funzione da numeri floating point a valori di tipo =money= (real -> money).
+     - Quando si costruiscono nuovi tipi usando =datatype= è importante definire, tramite delle funzioni, come operare sul nuovo tipo.
+     - Tipi ricorsivi possono essere definiti usando =datatype= e basandosi sul tipo stesso in quanto l'argomento di un costruttore di tipo "T" può essere di tipo "T" o di un tipo derivato da "T".
+       #+BEGIN_SRC sml
+         (*Definizione del tipo lista di interi che non permette di rappresentare una lista vuota*)
+         datatype lista = foglia of int | nodo of (int of lista);
+         (*Definizione più utilizzata in quanto permette anche di rappresentare una lista vuota*)
+         datatype lista1 = vuota | cons of (int * lista);         
+       #+END_SRC
+     - Il /type variable/ è una variabile i cui valori sono tipi di dato che permette di supportare il polimorfismo parametrico implicito per cui funzioni possono ricevere un tipo come parametro invece che conoscerlo a priori. La funzione identità mappa un valore di un generico tipo 'a ad un altro valore dello stesso tipo: =fn x => x;= ha tipo 'a -> 'a.
+     - I /type variable/ possono essere usati per definire tipi di dati generici che sono delle classi di tipi di dati, ad esempio tramite
+       #+BEGIN_SRC sml
+         datatype 'a oerrore => errore | valore of 'a;
+       #+END_SRC
+      si definisce il tipo di dato 'a orrore che può assumere il valore =errore= o valori di un generico tipo 'a come =int oerrore= che può avere valori =errore=  o numeri interi (generati tramite il costruttore di esempio: valore 5).
+     - =datatype= permette di specificare un type variable come argomento che precede il nome del tipo.
+
        
-		  
-	
-	
-   
-
-
 ** TODO Note sul currying
 ** TODO Implementazione della funzione booleana xor usando pattern matching: enumerazione esaustiva di tutti i possibili valori degli argomenti (tabella di verita') o utilizzo di variable pattern.
 ** TODO Funzione per convertire quantitativi di denaro.
