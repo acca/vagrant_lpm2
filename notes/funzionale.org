@@ -386,6 +386,8 @@
 *** Ricorsiione o iterazione
     Sono entrambi due validi metodi alternativi per ottenere lo stesso potere espressivo e spesso l'uso dell'uno o dell'altro sono dovuti alla predisposizione del programmatore ed alla natura del problema. Spesso si considera la ricorsione meno efficiente ma le considerazioni viste in precedenza possono dimostrare il contrario ed in generale implementazioni di algoritmi con ricorsione in coda possono ottenere prestazioni analoghe a quelle dei corrispondenti algoritmi iterativi.    
     
+* Il Lambda calcolo
+  
 * Definizioni
   - parametri formali :: 
        Variabili definite nella dichiarazione della funzione
@@ -417,7 +419,7 @@
        Ad esempio questa funzione è parziale: =f(n) = sqrt(n)= che va dall'insieme dei numeri naturali a se stesso in quanto f(n) è un numero naturale solo se n è un quadrato perfetto.
   
 * Esercitazioni
-** SML intro e utilities
+** DONE SML intro e utilities
    - Viene utilizzato l'interprete "Poly/ML" (http://www.polyml.org).
    - Compilazione con PolyML: http://thebreakfastpost.com/2015/06/10/standard-ml-and-how-im-compiling-it/
    - Basic examples: http://cs.fit.edu/~ryan/sml/intro.html
@@ -426,7 +428,7 @@
      - http://cs.lmu.edu/~ray/notes/introml/
 ** TODO Fattoriale ricorsivo e stack frame
 ** TODO Torri di Hanoi: versione semplice, versione funzionale e versione puramente funzionale in C++
-** TODO Qualche nota su ML
+** DONE Qualche nota su ML
    - Associare nomi a valori ::
 	Una /dichiarazione/ tramite la keyword val, in ML associa un nome ad un valore (che può anche essere il risultato di un'espressione). Quindi la variabile definita non è modificabile, infatti:
 	#+BEGIN_SRC sml
@@ -567,7 +569,18 @@
        #+END_SRC
       si definisce il tipo di dato 'a orrore che può assumere il valore =errore= o valori di un generico tipo 'a come =int oerrore= che può avere valori =errore=  o numeri interi (generati tramite il costruttore di esempio: valore 5).
      - =datatype= permette di specificare un type variable come argomento che precede il nome del tipo.
-
+   - Programmazione modulare ::
+     - /Programmazione in piccolo/ in cui il programma è composto da una sola entità di compilazione, non modulare e generalmente non complesso
+     - / Programmazione in grande/ in cui il programma è composto da porzioni di codice (entità) che permettono di controllare la visibilità delle varie definizioni. Il codice è diviso in entità di compilazione diverse ed esposto tramite un interfaccia che ne "nasconde" l'implementazione.
+     - ML mette a disposizione /structure/ e /signature/
+     - /Structure/: Contiene l'implementazione di un modulo software definendo un ambiente che contiene i legami (binding) definiti fra la keywork =Struct= e la keywork =end=. In questo modo si possono evitare collisioni.
+     - /Signature/: Permette di specificare un'interfaccia software.
+     - Creando legami fra structure e signature è possibile specificare quali legami nella struttura verranno esportati e come.
+     - La keyword =structure= permette di dichiarare tramite un nome una struttura per poi definirla con la keyword =struct=
+     - Accesso all'ambiente definito nella struttura tramite /dot notation/: il nome della stessa ed il separatore =.=, =cerchio.areacerchio 5.0=
+     - In alcuni casi, come distinzione di tipi, l'utilizzo di =structure= non basta, in tal caso si una =signature= che può contenere una serie di dichiarazioni di tipo o di variabile contenute fra le keyword "sig" ed "end".
+     - Con la keyword =signature= è possibile associare un nome alla stessa.
+     - Il legame fra =structure= e =signature= si crea con =:>=
        
 ** TODO Note sul currying
 ** TODO Implementazione della funzione booleana xor usando pattern matching: enumerazione esaustiva di tutti i possibili valori degli argomenti (tabella di verita') o utilizzo di variable pattern.
