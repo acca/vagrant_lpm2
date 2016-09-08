@@ -386,8 +386,132 @@
 *** Ricorsiione o iterazione
     Sono entrambi due validi metodi alternativi per ottenere lo stesso potere espressivo e spesso l'uso dell'uno o dell'altro sono dovuti alla predisposizione del programmatore ed alla natura del problema. Spesso si considera la ricorsione meno efficiente ma le considerazioni viste in precedenza possono dimostrare il contrario ed in generale implementazioni di algoritmi con ricorsione in coda possono ottenere prestazioni analoghe a quelle dei corrispondenti algoritmi iterativi.    
     
+* Astrarre sul controllo (capitolo 9)
+** Meccanismi di astrazione
+   In un linguaggio di programmazione si distinguono due meccanismi di astrazione:
+   - *Astrazione sul controllo*: Forniscono la possibilità di nascondere i dettagli procedurali
+   - *Astrazione sui dati*: Permettono la definizione e l'utilizzo di tipi di dati sofisticati senza far riferimento a come tali tipi siano implementati.
+** Variabili static
+   Se l'ambiente locale di una funzione avesse tempo di vita uguale a quello della funzione non si potrebbe comunicare fra due istanze della stessa funzione, o meglio si potrebbe fare soltanto tramite l'utilizzo di una variabile non locale. In vari linguaggi è possibile far si che una variabile locale ad un funzione mantenga il suo valore tra un'invocazione della funzione e la successiva.\\
+   = static=  introduce un associazione con tempo illimitato e fornisce maggiore astrazione rispetto ad una variabile globale in quanto essendo visbile solo al'interno della funzione non può essere modificata al suo esterno.
+** Astrazione funzionale
+   Si può definire /astrazione funzionale/ come un principio metodologico che permette ad un programma di controllare cosa viene presentato ad un cliente esterno. I sottoprogrammi permettono al progettista di ottenere /astrazione funzionale/ associando ad esempio una funzione ad ogni componente.
+
+   _Si ha vera astrazione funzionale quando un cliente non dipende dal corpo di una funziona ma solo dalla sua intestazione._ In questo modo la sostituzione (modifica semantica) del corpo della funzione non crea problemi al sistema nella sua interezza.
+
+   L'utilizzo di variabili non locale per scambiare informazioni con il resto del programma _distrugge l'astrazione funzionale._
+
+** Passaggio di parametri
+   Si possono distinguere varie /modalità di passaggio di parametri/ caratterizzate in base al tipo di comunicazione che è possibile ottenere ed dall'implementazione usata per ottenerla. La modalità è fissata al momento della definizione della funzione, può essere distinta per ogni parametro e si applica a tutti gli usi della funzione. Le più diffuse sono il passaggio per valore e per riferimento mentre il passaggio per nome è interessante per capire cosa significa passare un ambiente ad una procedura.
+
+   Da un punto di vista semantico il parametro può essere:
+   - di ingresso: Permette comunicazione unidirezionale, dal chiamante alla funzione (chiamato)
+   - di uscita: Permette comunicazione unidirezionale dalla funzione (chiamato) al chiamante
+   - sia di ingresso che di uscita: Permette comunicazione bidirezionale
+
+   Ai fini della classificazione delle varie modalità è di estrema importanza analizzare le modalità implementative che caratterizzano ciascuna di esse.
+
+   - Passaggio per valore ::
+   - Passaggio per riferimento :: 
+   - Passaggio per costante :: 
+   - Passaggio per risultato :: 
+   - Passaggio per valore-risultato ::
+   - Passaggio per nome ::
+
+** Array
+   Array sono memorizzati solitamente in una porzione contigua di memoria e se per un array /monodimensionale/ l'allocazione segue l'ordine degli indici, nel caso degli /array multidimensioanli/ si seguono due tecniche:
+   - Memorizzazione _in ordine di riga_: Sono contigue due elementi che differiscono di uno nell'ultimo indice (eccetto il caso degli elementi estremi della riga o del piano). È il più utilizzato perchè facilita la frequente operazione di selezione di una slice di riga.
+   - Memorizzazione _in ordine di colonna_: Sono contigue due elementi che differiscono di uno nel primo indice (eccetto il caso degli estremi).
+   In quanto ad efficienza le due operazioni sono equivalenti in presenza di utilizzo di cache.
+
+   Quando l'array è memorizzato in modo contiguo, il calcolo dell'indirizzo di un generico elemento è calcolabile sommando la seguente all'indirizzo di partenza:
+   
+   /(i1 - L1)S1 + ... + (in -Ln)Sn/
+
+   Supponendo n=3, S2 è la quantità di memoria necessaria per una riga, mentre S1 è quelle necessaria per un intero piano di v. Analogamente se n=2, S1 è la quantità necessaria per una riga.
+   Se si conosce a tempo di compilazione n ed i valori degli Lx (forma array statica) allora la precedente formula diventa:
+
+   /i1+S1 + ... + inSn - (L1S1 + ... + LnSn)
+
+   L1,Ln sono degli offset, ossia gli indici di partenza degli array che in genere sono a zero per comodità, in quanto la sottrazione finale scompare.
+
+   Esempio:
+   Array di =char a[100][100]= dove =a[0][0]= ha indirizzo =0x2000=. L'indirizzo di =a[5][10]= si trova a:
+   #+BEGIN_EXAMPLE   
+   1. Calcolo offset rispetto a partenza array --> 5 * 100 + 10 = 510
+   2. Conversione 0x2000 a decimale --> 2 * 16^3 = 8192
+   3. Calcolo indirizzo memoria di a[5][10] in decimale --> 8192 + 510 = 8702
+   4. Conversione 8702 a esadecimale --> 
+      (8702 / 16) = 543 resto 14. 14 = E
+       (543 / 16) =  33 resto 15. 15 = F
+        (33 / 16) =   2 resto  1.  1 = 1
+         (2 / 16) =   0 resto  2.  2 = 2
+   5. Risultato: 0x21FE
+   #+END_EXAMPLE
+
+   
+
 * Il Lambda calcolo
+
+  Un passo di riduzione: / (\lambda x.N)M -> N[M/x] / che significa: sostituisci con M tutte le x presenti in N. 
+
+  / (function n --> sum(3,n)) 5 |--> sum(3,5) /
+
+  Il lambda-calcolo `e il piu` semplice linguaggio con il quale possiamo calcolare qualsiasi problema. Ha delle ottime proprietà
+  E` Turing completo
+  E` il fondamento dei linguaggi funzionali
+  E` semplice perch ́e possiede un set molto ridotto di istruzioni
+  Tutto `e definibile attraverso funzioni e applicazioni di esse (lambda-calcolo puro)
   
+  Nel lambda calcolo ci sono due operazioni: astrazione e applicazione. La sintassi `e la seguente
+e ::= x | λx.e | e e | c
+dove un’esperessione e pu`o essere
+  x: una variabile
+  λx.e: una funzione che riceve in input un parametro x e valuta l’espressione e
+  e e: applicazione di due espressioni,
+  c: una costante.
+
+  astrazione di un termine rispetto ad una variabile x: λx.t ”La funzione che, quando applicata ad un valore v, produce t in cui v rimpiazza x.”
+  applicazione di una funzione ad un argomento: t1 t2 ”la funzione t1 applicata all’argomento t2”
+
+
+  Le regole del lambda-calcolo
+Il lambda-calcolo
+13/13
+1. Associativit`a a sinistra : M N L ≡ (M N) L
+2. Lo scope dell’astrazione si estende piu` a destra possibile:
+λx.xyz ≡ λx.(xyz)
+3. Rispettare la precedenza delle parentesi, ove esplicitate
+4. La precedenza nelle riduzioni va data all’applicazione piu` a sinistra e piu` interna: ((λx.x)x)(λx.xy)  → x(λx.xy), mentre la riduzione ((λx.x)x)(λx.xy)  → (λx.xy)x NON E` CORRETTA
+5. Attenzione alla cattura di variabile, se una variabile passa da libera a vincolata si sta facendo un grave errore : es. (λy.(λx.yx))x   (λx.xx) perch ́e la variabile libera y `e diventata vincolata dopo l’applicazione. La Soluzione `e rinominare la x vincolata con un nome diverso da y, per esempio t: (λy.(λt.yt))x, in questo modo non si incorre piu` in cattura di variabili.
+
+
+Variabili libere e legate
+
+Lambda associates to the right, so λsz.sz
+λ
+s
+z
+s
+z
+ is λs.(λz.sz)
+λ
+s
+λ
+z
+s
+z
+.
+Application associates to the left, so xyz
+x
+y
+z
+ is (xy)z
+x
+y
+z
+.
+
 * Definizioni
   - parametri formali :: 
        Variabili definite nella dichiarazione della funzione
