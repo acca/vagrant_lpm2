@@ -450,8 +450,9 @@
    #+END_EXAMPLE
 
    
-
 * Il Lambda calcolo
+  
+** DA SISTEMARE
 
   Un passo di riduzione: / (\lambda x.N)M -> N[M/x] / che significa: sostituisci con M tutte le x presenti in N. 
 
@@ -706,7 +707,18 @@ z
      - Con la keyword =signature= è possibile associare un nome alla stessa.
      - Il legame fra =structure= e =signature= si crea con =:>=
        
-** TODO Note sul currying
+** DONE Note sul currying
+   - "Trucco" standard per esprimere funzioni in piu` variabili
+     #+BEGIN_EXAMPLE
+     f(x,y) ⇒ f′(x), dove f() ritorna un numero, mentre f′() ritorna una funzione!
+     #+END_EXAMPLE
+   - Notare che in ML una funzione si applica ai suoi argomenti senza usare parentesi e che l’applicazione di funzione associa a sinistra
+     - Tramite currying possiamo codificare funzioni a n argomenti usando fn, prima si applica la funzione ad a, poi si applica il risultato (che e` una funzione) a b
+       #+BEGIN_EXAMPLE
+       (fnx=>fny=>x∗x+y∗y)ab= ((fn x => fn y => x ∗ x + y ∗ y) a) b       
+       #+END_EXAMPLE
+
+     
 ** TODO Implementazione della funzione booleana xor usando pattern matching: enumerazione esaustiva di tutti i possibili valori degli argomenti (tabella di verita') o utilizzo di variable pattern.
 ** TODO Funzione per convertire quantitativi di denaro.
 ** TODO Esempio con datatype: tipo numero
