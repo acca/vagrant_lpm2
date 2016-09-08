@@ -19,6 +19,13 @@
   - http://www.lfcs.inf.ed.ac.uk/software/polyml/docs/Intro1.html
   - http://esamionline.disi.unitn.it
   - http://sml-family.org/Basis/top-level-chapter.html
+** Lambda calculus
+   - https://en.wikipedia.org/wiki/Lambda_calculus (exercises)
+   - http://www.dipmat.unict.it/~barba/PROG-LANG/ESERCIZI/EserciziLC/esercizi.html
+   - http://infoteorica.weebly.com/uploads/1/7/8/9/17895653/lambda_rid.pdf
+   - http://disi.unitn.it/~mottin/funprog/lambda-calculus.pdf (exercises)
+   - http://www.cburch.com/proj/lambda/
+   - http://cs.stackexchange.com/questions/4990/lambda-calculus-simplification
 * Disclaimer
   This work has been created to collect tools, codes  and notes during the studying session of the course "Linguaggi di Programmazione - Modulo 2" at UniTN and may contain errors. It is strongly suggested to not use it as the only reference.
 
